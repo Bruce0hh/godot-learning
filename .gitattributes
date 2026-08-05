@@ -1,0 +1,22 @@
+# Godot 的 .tscn / .tres / .godot 都是文本格式。
+# 统一用 LF，否则在 Windows 上编辑器保存一次就会产生整文件 diff。
+* text=auto eol=lf
+
+*.gd     text eol=lf
+*.tscn   text eol=lf
+*.tres   text eol=lf
+*.godot  text eol=lf
+*.import text eol=lf
+*.cfg    text eol=lf
+*.md     text eol=lf
+
+# 二进制素材，禁止 git 做行尾转换（否则文件会损坏）
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.webp binary
+*.ogg  binary
+*.wav  binary
+*.mp3  binary
+*.ttf  binary
+*.otf  binary

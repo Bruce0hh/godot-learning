@@ -1,0 +1,27 @@
+# ── Godot 4+ 导入缓存与生成物 ────────────────────────────
+# .godot/ 是每次打开编辑器都会重建的缓存目录。
+# 不忽略的话，每次打开项目都会产生上千行 diff。
+.godot/
+/android/
+*.translation
+
+# 旧版 Godot 3 遗留
+.import/
+
+# ── 导出产物与凭据 ──────────────────────────────────────
+builds/
+# export_presets.cfg 可能包含 Android keystore 密码等凭据，不提交
+export_presets.cfg
+*.exe
+*.pck
+*.zip
+
+# ── 编辑器 / 系统 ───────────────────────────────────────
+.vscode/
+.idea/
+Thumbs.db
+desktop.ini
+
+# ⚠️ 注意：*.import 文件（资源导入配置）必须提交！
+# 它们记录了每个素材的导入参数，漏掉会导致别的机器上素材全部丢失。
+# 上面的 .import/ 是目录（Godot 3 的缓存），和 *.import 文件不是一回事。
