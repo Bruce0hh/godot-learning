@@ -1,8 +1,10 @@
-; Godot 项目配置文件（Engine configuration file）
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
 ;
-; 这个文件平时由编辑器的「项目 → 项目设置」界面维护，
-; 但它是纯文本的，所以也能直接读、直接改、直接进 git diff。
-; 想知道某个设置项叫什么名字，在编辑器项目设置里点它，底部会显示 key。
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
 
 config_version=5
 
@@ -15,27 +17,13 @@ config/icon="res://icon.svg"
 
 [display]
 
-; 640x360 是「基准分辨率」：游戏内部永远按这个尺寸绘制。
-; 它 ×2 = 1280x720，×3 = 1920x1080，都是整数倍，
-; 所以像素画放大后不会出现锯齿撕裂。
 window/size/viewport_width=640
 window/size/viewport_height=360
-; 实际弹出的窗口大小（只影响窗口，不影响游戏内坐标）
 window/size/window_width_override=1280
 window/size/window_height_override=720
-; viewport 模式 = 先按 640x360 渲染，再整体放大到窗口
 window/stretch/mode="viewport"
-window/stretch/aspect="keep"
 
 [input]
-
-; ── 自定义输入动作（Input Action）─────────────────────────
-; 为什么不直接用内置的 ui_left / ui_accept？
-; 因为那些是给 UI 焦点导航用的。游戏逻辑应该用自己的动作名，
-; 这样以后加手柄支持、做按键重绑定，都不用改一行游戏代码。
-;
-; physical_keycode 表示「键盘上那个物理位置的键」，
-; 用它而不是 keycode，AZERTY / DVORAK 键盘的玩家才不会错位。
 
 move_left={
 "deadzone": 0.2,
@@ -59,10 +47,6 @@ jump={
 
 [rendering]
 
-; gl_compatibility 而不是默认的 forward_plus：
-; 2D 游戏用不到 Vulkan 的高级特性，兼容性更好、启动更快，
-; 而且这是唯一能导出到 Web（浏览器里玩）的渲染后端。
+textures/canvas_textures/default_texture_filter=0
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
-; 0 = Nearest（邻近采样）。不设这个，所有像素素材都会被糊成一团 —— 新手第一大坑。
-textures/canvas_textures/default_texture_filter=0
