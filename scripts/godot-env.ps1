@@ -1,4 +1,4 @@
-# Godot 环境变量与快捷命令
+﻿# Godot 环境变量与快捷命令
 #
 # 用法（在仓库根目录）：
 #   . .\scripts\godot-env.ps1     <- 注意开头那个点和空格，这叫 dot-source，
