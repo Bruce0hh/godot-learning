@@ -30,23 +30,27 @@ git checkout main; git merge stage-1-animation   # 完成
 
 ---
 
-## ☐ 阶段 1 — 换素材 + 角色动画
+## ✅ 阶段 1 — 换素材 + 角色动画
 
-把方块换成真正的角色，加上待机 / 跑动 / 跳跃三套动画。
+**状态：已完成**（分支 `stage-1-animation`）
 
-**要做的：**
-1. 去 [Kenney - Pixel Platformer](https://kenney.nl/assets/pixel-platformer) 下载（CC0，可商用免署名），
-   解压到 `projects/01-platformer/assets/sprites/`
-2. 把 `player.tscn` 里的 `Sprite2D` 换成 **`AnimatedSprite2D`**
-3. 在检视面板里新建 `SpriteFrames` 资源，建 `idle` / `run` / `jump` 三个动画
-4. 在 `player.gd` 里根据 `velocity` 和 `is_on_floor()` 切换动画
+踩过的三个坑，值得记住：
+1. **`$X` 按「名字」找节点，不是按「类型」** —— 把 `Sprite2D` 改类型成
+   `AnimatedSprite2D` 后节点仍叫 `Sprite`，`$AnimatedSprite2D` 就找不到，
+   返回 null，下一行调 `.play()` 直接炸。给 `@onready` 变量加类型标注
+   （`: AnimatedSprite2D`）能让编辑器帮你查属性名。
+2. **动画选择要和物理计算分开** —— 把 `play()` 散落在各个 if 里会互相覆盖，
+   谁最后执行谁生效。正确做法是物理算完后，用一条 if/elif/else
+   优先级链统一决定播哪个。
+3. **`is_on_floor()` 返回上一次 `move_and_slide()` 的结果** —— 所以选动画的
+   代码必须放在 `move_and_slide()` 之后，否则动画慢半拍。
 
-**学到：** `AnimatedSprite2D`、`SpriteFrames`、纹理导入设置、动画状态切换逻辑
+遗留待改（阶段 2 会撞上）：`run` 的判断用的是 `direction`（有没有按键）而不是
+`velocity.x`（实际有没有动），顶着墙按方向键会出现「原地蹬腿」。
 
-**验收：** 站着播 idle，跑动播 run，腾空播 jump，转身时贴图翻转
-
-**坑：** 素材糊成一团 → 检查纹理的导入设置里 Filter 是否关掉（项目已全局设为 Nearest，
-但单个纹理可以覆盖）
+**学到：** `AnimatedSprite2D`、`SpriteFrames`（Speed FPS / 每帧 Duration / Loop）、
+素材尺寸与 `scale` 的关系、渲染与物理是两套独立的东西（贴图 24px 而碰撞盒 32px
+会让角色悬空）、动画状态机的分层。
 
 ---
 

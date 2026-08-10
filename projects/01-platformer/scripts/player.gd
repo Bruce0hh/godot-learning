@@ -5,6 +5,8 @@
 # 它不受引擎物理模拟推动，完全由你的代码决定怎么动 —— 这正是平台跳跃要的。
 extends CharacterBody2D
 
+# 按名字来加载而非类型，所以场景树和检查器的名字要对应
+@onready var animated_sprite_2d: AnimatedSprite2D = $AnimatedSprite2D
 
 # @export 让变量出现在编辑器右侧的「检视面板（Inspector）」里，
 # 可以不改代码、边跑边调数值。调手感的时候这比改代码快 10 倍。
@@ -37,8 +39,8 @@ func _physics_process(delta: float) -> void:
 	var direction: float = Input.get_axis("move_left", "move_right")
 	if direction != 0.0:
 		velocity.x = direction * speed
-		# 让贴图跟着朝向翻转（$Sprite 是 get_node("Sprite") 的简写）
-		$Sprite.flip_h = direction < 0.0
+		# 让贴图跟着朝向翻转
+		animated_sprite_2d.flip_h = direction < 0.0
 	else:
 		# move_toward(当前值, 目标值, 每帧最大变化量)
 		# 用它做减速，松开按键后角色会滑一小段再停，比直接归零手感好
@@ -49,3 +51,17 @@ func _physics_process(delta: float) -> void:
 	# 并更新 is_on_floor() / is_on_wall() 的状态。
 	# ⚠️ 必须放在最后调用。
 	move_and_slide()
+
+	# ── 物理算完了，现在状态是确定的，统一选动画 ──
+	_update_animation(direction)
+
+
+
+# 统一状态
+func _update_animation(direction:float) -> void:
+	if not is_on_floor():
+		animated_sprite_2d.play("jump")
+	elif direction != 0.0:
+		animated_sprite_2d.play("run")
+	else:
+		animated_sprite_2d.play("idle")
