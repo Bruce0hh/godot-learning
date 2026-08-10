@@ -11,7 +11,10 @@ extends CharacterBody2D
 # @export 让变量出现在编辑器右侧的「检视面板（Inspector）」里，
 # 可以不改代码、边跑边调数值。调手感的时候这比改代码快 10 倍。
 @export var speed: float = 200.0          # 水平移动速度（像素/秒）
-@export var jump_velocity: float = -350.0 # 起跳初速度（负数 = 向上，Godot 2D 里 Y 轴朝下）
+@export var jump_velocity: float = -400.0 # 起跳初速度（负数 = 向上，Godot 2D 里 Y 轴朝下）
+                                          # 跳跃高度 h = v²/(2g)，g 取项目设置的 980：
+                                          # -350 → 62.5px（跳不上 80px 高的 PlatformA）
+                                          # -400 → 81.6px 理论值，实测约 85px，够用
 
 # 重力从项目设置里读，而不是硬编码一个数字。
 # 好处：以后在「项目设置 → Physics → 2D → Default Gravity」改一次，
