@@ -54,21 +54,50 @@ git checkout main; git merge stage-1-animation   # 完成
 
 ---
 
-## ☐ 阶段 2 — 用 TileMapLayer 画第一关
+## ✅ 阶段 2 — 用 TileMapLayer 画第一关
 
-删掉临时的 ColorRect 平台，用瓦片地图画一个真正的关卡。
+**状态：已完成**（分支 `stage-2-tilemap`）
 
-**要做的：**
-1. 加 `TileMapLayer` 节点（⚠️ Godot 4.3 起 `TileMap` 已废弃，用 `TileMapLayer`）
-2. 用 Kenney 的地块图集建 `TileSet`
-3. 给地块加**物理层（Physics Layer）**，否则角色会穿过去
-4. 画一个有高低差、需要连续跳跃才能通过的关卡
+成果：174 格瓦片，关卡 864×360（1.35 屏宽），6 条平台 + 一条通底地面，
+临时的 `Ground` / `PlatformA` / `PlatformB` 已删除。
+TileSet 存成独立资源 `assets/platformer.tres`。
 
-**学到：** `TileMapLayer`、`TileSet`、图集切分、物理层、碰撞多边形
+踩过的四个坑：
 
-**验收：** 关卡比一屏宽，角色能跳上跳下，不会穿模
+1. **纹理参数不在 TileSet 上，在「图集源（AtlasSource）」上** —— TileSet 内部还有一层：
+   ```
+   TileSet（资源）
+    └─ Source 0 : TileSetAtlasSource
+        ├─ Texture             = tilemap.png
+        ├─ Texture Region Size = (18,18)   ← 「从图片上裁多大一块」
+        └─ Separation          = (1,1)
+   ```
+   TileSet 自己的 `tile_size` 是「地图网格一格多大」，两个都是 18 但**是两回事**。
+   检视面板里永远看不到纹理参数，得先在**底部 TileSet 面板**建出源来。
 
-**坑：** 画好了但角色掉下去 → 99% 是忘了在 TileSet 里给地块画碰撞多边形
+2. **两个底部面板别搞混** —— 选中 TileSet **资源** → `TileSet` 面板（定义有哪些瓦片）；
+   选中 `TileMapLayer` **节点** → `TileMap` 面板（把瓦片画进场景）。画不了东西通常是待错面板了。
+
+3. **格子坐标可以是负数，Godot 不拦你** —— 第一次画时有 6 格画在了 `cy=-1`
+   （世界 y = -18~0），全在视口外，白画。编辑器视口比游戏视口大，**红色横线才是 y=0**。
+
+4. **`+` 按钮走文件对话框，路径不全会报「所选纹理无效」** —— 直接把 png
+   从文件系统**拖进图块源列表**更稳。真遇到了就「项目 → 重新加载当前项目」。
+
+**关键理解：** TileSet 是 Resource（数据定义 / 调色板，可被多个 Layer 复用），
+TileMapLayer 是 Node（实例，存「坐标 → 图块 ID」的稀疏映射表）。
+和阶段 1 的 `SpriteFrames`(Resource) vs `AnimatedSprite2D`(Node) 是同一个模式。
+`tile_map_data` 序列化后是 `2 字节头 + 每格 12 字节`。
+
+**关卡设计用得上的数字**（都由阶段 1 的物理参数推出来）：
+- 一屏 = 640÷18 = **35.5 格**
+- 角色高 24px = 1.33 格 → 通道至少 **2 格高**
+- 跳跃高度 85px = 4.7 格 → 台阶最高 **4 格**；本关最紧的一跳抬升 72px，余量 13px
+
+遗留待改（延续自阶段 1，本阶段没撞上是因为关卡里没有竖直墙面）：
+`run` 的判断用的是 `direction` 而不是 `velocity.x`。
+
+**下阶段预告：** `Background` 只有 640×360，但关卡宽 864px —— 加相机后右边会露空白。
 
 ---
 
