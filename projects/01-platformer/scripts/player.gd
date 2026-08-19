@@ -67,7 +67,7 @@ func _update_animation(direction:float) -> void:
 	
 	if not is_on_floor():
 		animated_sprite_2d.play("jump")
-	elif direction != 0.0:
+	elif abs(velocity.x) > 5.0:
 		animated_sprite_2d.play("run")
 	else:
 		animated_sprite_2d.play("idle")
